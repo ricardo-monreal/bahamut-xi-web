@@ -133,11 +133,23 @@ export async function currentAccount(): Promise<Account | null> {
   return accountForToken(jar.get(SESSION_COOKIE)?.value, 'web')
 }
 
+/**
+ * Whether the browser reached us over HTTPS. Browsers silently drop Secure cookies on plain-http
+ * pages, so the flag must follow the real request (nginx sends X-Forwarded-Proto), not SITE_URL:
+ * otherwise opening the site by IP or before the certificate exists makes sign-in fail silently.
+ */
+async function requestIsHttps(): Promise<boolean> {
+  const h = await headers()
+  const proto = (h.get('x-forwarded-proto') ?? '').split(',')[0].trim().toLowerCase()
+  if (proto) return proto === 'https'
+  return env.secureCookies
+}
+
 export async function setSessionCookie(token: string): Promise<void> {
   const jar = await cookies()
   jar.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: env.secureCookies,
+    secure: await requestIsHttps(),
     sameSite: 'lax',
     path: '/',
     maxAge: WEB_SESSION_DAYS * 86400
