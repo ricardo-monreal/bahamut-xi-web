@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ItemIcon } from '@/components/Item'
-import { AH_CATEGORIES, formatGil, ITEM_FLAGS, jobsFromMask, slotLabels } from '@/lib/ffxi'
+import { AH_CATEGORIES, formatGil, ITEM_FLAGS, jobsFromMask, slotLabels, formatModValue } from '@/lib/ffxi'
 import { iconBase, itemInfo } from '@/lib/game'
 import { itemDetail, skillName } from '@/lib/items'
 
@@ -11,7 +11,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: info?.name ?? 'Item' }
 }
 
-const fmt = (v: number) => (v > 0 ? `+${v}` : String(v))
 
 export default async function ItemPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id)
@@ -65,7 +64,7 @@ export default async function ItemPage({ params }: { params: Promise<{ id: strin
                   {detail.mods.map((m) => (
                     <div key={m.id} style={{ display: 'contents' }}>
                       <span>{m.name}</span>
-                      <span className="num">{fmt(m.value)}</span>
+                      <span className="num">{formatModValue(m.id, m.value)}</span>
                     </div>
                   ))}
                 </div>

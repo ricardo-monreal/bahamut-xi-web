@@ -218,3 +218,15 @@ export function formatPlaytime(seconds: number): string {
 }
 
 export const formatGil = (n: number): string => n.toLocaleString('en-US')
+
+/**
+ * Mods the server stores in hundredths of a percent (400 = 4%): gear, magic and ability haste.
+ */
+const BASIS_POINT_MODS = new Set([167, 217, 383, 384])
+
+/** "+5", "-3", or "+4%" for haste-style mods. */
+export function formatModValue(id: number, value: number): string {
+  const sign = value > 0 ? '+' : ''
+  if (BASIS_POINT_MODS.has(id)) return `${sign}${Number((value / 100).toFixed(2))}%`
+  return `${sign}${value}`
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { EQUIP_GRID, ERA_JOBS, JOB_NAMES } from '@/lib/ffxi'
+import { EQUIP_GRID, ERA_JOBS, JOB_NAMES, formatModValue } from '@/lib/ffxi'
 
 interface Gear {
   id: number
@@ -215,7 +215,7 @@ export default function DressingRoom({ characters, signedIn }: { characters: Cha
                 {totals.map((t) => (
                   <div key={t.id} style={{ display: 'contents' }}>
                     <span>{t.name}</span>
-                    <span className="num">{t.value > 0 ? `+${t.value}` : t.value}</span>
+                    <span className="num">{formatModValue(t.id, t.value)}</span>
                   </div>
                 ))}
               </div>
